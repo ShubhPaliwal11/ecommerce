@@ -160,7 +160,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   Text('Discount (${cart.activeCoupon!.code})'),
                   Text(
                     '-\$${cart.discountAmount.toStringAsFixed(2)}',
-                    style: const TextStyle(color: Colors.green),
+                    style: const TextStyle(color: Colors.brown),
                   ),
                 ],
               ),
