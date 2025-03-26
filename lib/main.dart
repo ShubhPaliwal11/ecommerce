@@ -1,70 +1,54 @@
+import 'package:e_commerce/pages/LogininPage.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:e_commerce/pages/auth_screen.dart';
+import 'package:e_commerce/pages/home_screen.dart';
 
-void main() {
-  runApp(MaterialApp(
-    home: CheckoutScreen(),
-  ));
+// void main() {
+//   runApp(MaterialApp(
+//     home: Logininpage(),
+//   ));
+// }
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+    url: 'https://dmbyuzxazfqmvqdqegyn.supabase.co',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRtYnl1enhhemZxbXZxZHFlZ3luIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI5NzgyODIsImV4cCI6MjA1ODU1NDI4Mn0.YNtpistaMpTP7CajgyrtZyCa5cI3XLjg1nbguP806DQ',
+  );
+
+  runApp(MyApp());
 }
 
-class CheckoutScreen extends StatelessWidget {
-  final List<Map<String, dynamic>> chosenProducts = [
-    {'name': 'Product A', 'price': 200},
-    {'name': 'Product B', 'price': 150},
-  ];
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
 
-  final List<Map<String, dynamic>> recommendedProducts = [
-    {'name': 'Product C', 'price': 180},
-    {'name': 'Product D', 'price': 220},
-  ];
+class _MyAppState extends State<MyApp> {
+  final supabase = Supabase.instance.client;
+  bool isAuthenticated = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Listen to auth state changes
+    supabase.auth.onAuthStateChange.listen((data) {
+      final session = supabase.auth.currentSession;
+      setState(() {
+        isAuthenticated = session != null;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    double total = chosenProducts.fold(0, (sum, item) => sum + item['price']);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Checkout'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('Chosen Products', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            ),
-            ...chosenProducts.map((product) => ListTile(
-                  title: Text(product['name']),
-                  subtitle: Text('₹${product['price']}'),
-                )),
-            Divider(),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('Recommended Products', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            ),
-            ...recommendedProducts.map((product) => ListTile(
-                  title: Text(product['name']),
-                  subtitle: Text('₹${product['price']}'),
-                  trailing: ElevatedButton(
-                    onPressed: () {
-                      // Add your add-to-cart logic here
-                      print('Added ${product['name']}');
-                    },
-                    child: Text('Add'),
-                  ),
-                )),
-            Divider(),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text('Total: ₹$total', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            ),
-          ],
-        ),
-      ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: isAuthenticated ? HomeScreen() : AuthScreen(),
     );
   }
 }
