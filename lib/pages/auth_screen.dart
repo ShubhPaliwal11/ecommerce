@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:e_commerce/pages/home_screen.dart';
+import 'package:e_commerce/screens/home_screen.dart';
 
 final supabase = Supabase.instance.client;
 
@@ -22,11 +22,17 @@ class _AuthScreenState extends State<AuthScreen> {
       );
       if (response.user != null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Sign-up successful! Please check your email for verification.')),
+          SnackBar(
+            content: Text(
+              'Sign-up successful! Please check your email for verification.',
+            ),
+          ),
         );
       }
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString())));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error.toString())));
     }
   }
 
@@ -37,14 +43,18 @@ class _AuthScreenState extends State<AuthScreen> {
         password: passwordController.text.trim(),
       );
       if (response.session != null) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Login successful!')));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Login successful!')));
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomeScreen()),
         );
       }
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString())));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error.toString())));
     }
   }
 
@@ -68,7 +78,6 @@ class _AuthScreenState extends State<AuthScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IntrinsicHeight(
-
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -91,7 +100,6 @@ class _AuthScreenState extends State<AuthScreen> {
                       ),
                     ],
                   ),
-
                 ),
 
                 SizedBox(height: 20),
@@ -166,7 +174,10 @@ class _AuthScreenState extends State<AuthScreen> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 40,
+                            vertical: 12,
+                          ),
                         ),
                         child: Text(
                           isLogin ? 'Login' : 'Sign Up',
@@ -184,7 +195,9 @@ class _AuthScreenState extends State<AuthScreen> {
                           });
                         },
                         child: Text(
-                          isLogin ? 'Already have an account? Login' : 'Don\'t have an account? Sign Up',
+                          isLogin
+                              ? 'Already have an account? Login'
+                              : 'Don\'t have an account? Sign Up',
                           style: TextStyle(
                             color: Colors.brown,
                             fontFamily: "nexa",
