@@ -12,7 +12,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Sample product data
     final List<Product> products = [
       Product(
         id: '1',
@@ -63,10 +62,18 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('E-Commerce App'),
+        title: const Text(
+          'E-Commerce App',
+          style: TextStyle(
+            fontFamily: 'hello',
+            fontSize: 30,
+            color: Color(0xFFE6C7A6),
+          ),
+        ),
+        backgroundColor: Colors.brown,
         actions: [
           IconButton(
-            icon: const Icon(Icons.shopping_cart),
+            icon: const Icon(Icons.shopping_cart, color: Color(0xFFE6C7A6)),
             onPressed: () {
               Navigator.push(
                 context,
@@ -78,36 +85,34 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // Search bar
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Search products...',
-                prefixIcon: const Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search, color: Colors.brown),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(color: Colors.brown),
                 ),
                 filled: true,
-                fillColor: Colors.grey[100],
+                fillColor: Colors.brown.shade50,
               ),
             ),
           ),
-          // Categories
           SizedBox(
-            height: 100,
+            height: 50,
             child: ListView(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 8),
               children: [
-                _buildCategoryCard(Icons.phone_android, 'Electronics'),
-                _buildCategoryCard(Icons.computer, 'Computers'),
-                _buildCategoryCard(Icons.headphones, 'Accessories'),
-                _buildCategoryCard(Icons.watch, 'Wearables'),
+                _buildCategoryButton('Electronics'),
+                _buildCategoryButton('Computers'),
+                _buildCategoryButton('Accessories'),
+                _buildCategoryButton('Wearables'),
               ],
             ),
           ),
-          // Products grid
           Expanded(
             child: GridView.builder(
               padding: const EdgeInsets.all(8),
@@ -119,7 +124,19 @@ class HomeScreen extends StatelessWidget {
               ),
               itemCount: products.length,
               itemBuilder: (context, index) {
-                return ProductCard(product: products[index]);
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      // color: Color(0xFFF5E6DA), // Cream color inside the card
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: ProductCard(product: products[index]),
+                  ),
+                );
               },
             ),
           ),
@@ -127,13 +144,16 @@ class HomeScreen extends StatelessWidget {
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 0,
+        selectedItemColor: Color(0xFFE6C7A6),
+        unselectedItemColor: Color(0xFFE6C7A6).withOpacity(0.6),
+        backgroundColor: Colors.brown,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.home, color: Color(0xFFE6C7A6)), label: 'Home'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_bag),
+            icon: Icon(Icons.shopping_bag, color: Color(0xFFE6C7A6)),
             label: 'Orders',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          BottomNavigationBarItem(icon: Icon(Icons.person, color: Color(0xFFE6C7A6)), label: 'Profile'),
         ],
         onTap: (index) {
           if (index == 1) {
@@ -149,24 +169,26 @@ class HomeScreen extends StatelessWidget {
           }
         },
       ),
+      backgroundColor: Colors.brown.shade100,
     );
   }
 
-  Widget _buildCategoryCard(IconData icon, String label) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 4),
-      child: InkWell(
-        onTap: () {
+  Widget _buildCategoryButton(String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: ElevatedButton(
+        onPressed: () {
           // Handle category tap
         },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 32),
-            const SizedBox(height: 8),
-            Text(label),
-          ],
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.brown.shade300,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
+        child: Text(label, style: const TextStyle(fontSize: 16)),
       ),
     );
   }

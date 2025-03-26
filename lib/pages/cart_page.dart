@@ -47,7 +47,7 @@ class CartPage extends StatelessWidget {
                   itemCount: cart.items.length,
                   itemBuilder: (context, index) {
                     final product = cart.items.values.elementAt(index);
-                    return _buildCartItem(context, cart, product);
+                    return _buildCartItem(context, cart, product as Product);
                   },
                 ),
               ),

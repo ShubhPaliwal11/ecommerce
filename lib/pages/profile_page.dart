@@ -10,7 +10,7 @@ class ProfilePage extends StatelessWidget {
     await supabase.auth.signOut();
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const AuthScreen()),
+      MaterialPageRoute(builder: (context) => AuthScreen()),
     );
   }
 
