@@ -44,7 +44,7 @@ class ProductCard extends StatelessWidget {
                           product.isInCart
                               ? Icons.shopping_cart
                               : Icons.shopping_cart_outlined,
-                          color: product.isInCart ? Colors.blue : Colors.grey,
+                          color: product.isInCart ? Colors.brown : Colors.grey,
                         ),
                         onPressed: () {
                           if (product.isInCart) {
@@ -78,14 +78,14 @@ class ProductCard extends StatelessWidget {
                     '₹${product.price.toStringAsFixed(2)}',
                     style: const TextStyle(
                       fontSize: 14,
-                      color: Colors.green,
+                      color: Colors.brown,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      Icon(Icons.star, size: 16, color: Colors.amber[700]),
+                      Icon(Icons.star, size: 16, color: Colors.brown),
                       const SizedBox(width: 4),
                       Text(
                         product.rating.toString(),

@@ -101,7 +101,7 @@ class CartPage extends StatelessWidget {
                     '₹${product.price.toStringAsFixed(2)}',
                     style: const TextStyle(
                       fontSize: 14,
-                      color: Colors.green,
+                      color: Colors.brown,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -148,7 +148,7 @@ class CartPage extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.green,
+                  color: Colors.brown,
                 ),
               ),
             ],

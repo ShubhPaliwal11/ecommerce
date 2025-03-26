@@ -153,12 +153,12 @@ class CartScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.local_offer, color: Colors.green),
+                    const Icon(Icons.local_offer, color: Colors.brown),
                     const SizedBox(width: 8),
                     Text(
                       'Coupon: ${cart.activeCoupon!.code}',
                       style: const TextStyle(
-                        color: Colors.green,
+                        color: Colors.brown,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -180,7 +180,7 @@ class CartScreen extends StatelessWidget {
                 Text(
                   '-\$${cart.discountAmount.toStringAsFixed(2)}',
                   style: const TextStyle(
-                    color: Colors.green,
+                    color: Colors.brown,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -284,14 +284,14 @@ class CartScreen extends StatelessWidget {
               content: Text(
                 'Coupon ${selectedCoupon.code} applied successfully!',
               ),
-              backgroundColor: Colors.green,
+              backgroundColor: Colors.brown,
             ),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('This coupon cannot be applied to your cart'),
-              backgroundColor: Colors.red,
+              backgroundColor: Colors.brown,
             ),
           );
         }

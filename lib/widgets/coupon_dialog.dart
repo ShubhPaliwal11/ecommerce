@@ -49,7 +49,7 @@ class CouponDialog extends StatelessWidget {
                         coupon.code,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: isValid ? Colors.blue : Colors.grey,
+                          color: isValid ? Colors.brown : Colors.brown.shade50,
                         ),
                       ),
                       subtitle: Column(
@@ -73,7 +73,7 @@ class CouponDialog extends StatelessWidget {
                       trailing: Text(
                         '${coupon.discountPercentage}% OFF',
                         style: TextStyle(
-                          color: isValid ? Colors.green : Colors.grey,
+                          color: isValid ? Colors.brown : Colors.brown.shade50,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

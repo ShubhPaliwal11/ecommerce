@@ -8,22 +8,28 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
+        backgroundColor: Colors.brown,
+        foregroundColor: Colors.white,
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings),
+            icon: const Icon(Icons.settings, color: Colors.white),
             onPressed: () {
               // Handle settings
             },
           ),
         ],
       ),
+      backgroundColor: Colors.brown.shade50,
       body: SingleChildScrollView(
         child: Column(
           children: [
             // Profile header
             Container(
               padding: const EdgeInsets.all(16),
-              color: Theme.of(context).primaryColor,
+              decoration: BoxDecoration(
+                color: Colors.brown,
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: Column(
                 children: [
                   const CircleAvatar(
@@ -49,57 +55,15 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
             // Profile options
+            _buildProfileOption(Icons.shopping_bag, 'My Orders'),
+            _buildProfileOption(Icons.favorite, 'Wishlist'),
+            _buildProfileOption(Icons.location_on, 'Shipping Addresses'),
+            _buildProfileOption(Icons.payment, 'Payment Methods'),
+            _buildProfileOption(Icons.notifications, 'Notifications'),
+            _buildProfileOption(Icons.help, 'Help & Support'),
             ListTile(
-              leading: const Icon(Icons.shopping_bag),
-              title: const Text('My Orders'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                // Navigate to orders
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.favorite),
-              title: const Text('Wishlist'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                // Navigate to wishlist
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.location_on),
-              title: const Text('Shipping Addresses'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                // Navigate to addresses
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.payment),
-              title: const Text('Payment Methods'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                // Navigate to payment methods
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.notifications),
-              title: const Text('Notifications'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                // Navigate to notifications
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.help),
-              title: const Text('Help & Support'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                // Navigate to help
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Logout'),
+              leading: const Icon(Icons.logout, color: Colors.brown),
+              title: const Text('Logout', style: TextStyle(color: Colors.brown)),
               onTap: () {
                 // Handle logout
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -112,6 +76,17 @@ class ProfileScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildProfileOption(IconData icon, String title) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.brown),
+      title: Text(title, style: const TextStyle(color: Colors.brown)),
+      trailing: const Icon(Icons.chevron_right, color: Colors.brown),
+      onTap: () {
+        // Navigate to respective screen
+      },
     );
   }
 }

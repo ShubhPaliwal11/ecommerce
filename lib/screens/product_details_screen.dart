@@ -35,7 +35,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: [Colors.transparent, Colors.black26],
+                        colors: [Colors.transparent, Colors.brown],
                       ),
                     ),
                   ),
@@ -44,7 +44,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             ),
             actions: [
               IconButton(
-                icon: const Icon(Icons.favorite_border),
+                icon: const Icon(Icons.favorite_border,color: Colors.brown),
                 onPressed: () {
                   // TODO: Implement wishlist functionality
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -53,7 +53,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 },
               ),
               IconButton(
-                icon: const Icon(Icons.share),
+                icon: const Icon(Icons.share,color: Colors.brown),
                 onPressed: () {
                   // TODO: Implement share functionality
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -84,7 +84,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       Consumer<CartProvider>(
                         builder: (context, cart, child) {
                           return IconButton(
-                            icon: const Icon(Icons.shopping_cart),
+                            icon: const Icon(Icons.shopping_cart,color: Colors.brown),
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -101,7 +101,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      Icon(Icons.star, color: Colors.amber[700], size: 20),
+                      Icon(Icons.star, color: Colors.brown, size: 20),
                       const SizedBox(width: 4),
                       Text(
                         widget.product.rating.toString(),
@@ -118,7 +118,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.green[50],
+                      color: Colors.brown.shade100,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Row(
@@ -129,7 +129,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           style: Theme.of(
                             context,
                           ).textTheme.headlineMedium?.copyWith(
-                            color: Colors.green,
+                            color: Colors.brown,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -142,15 +142,15 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           child: Row(
                             children: [
                               IconButton(
-                                icon: const Icon(Icons.remove),
+                                icon: const Icon(Icons.remove, color: Colors.brown),
                                 onPressed:
-                                    quantity > 1
-                                        ? () {
-                                          setState(() {
-                                            quantity--;
-                                          });
-                                        }
-                                        : null,
+                                quantity > 1
+                                    ? () {
+                                  setState(() {
+                                    quantity--;
+                                  });
+                                }
+                                    : null,
                               ),
                               Container(
                                 padding: const EdgeInsets.symmetric(
@@ -165,7 +165,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 ),
                               ),
                               IconButton(
-                                icon: const Icon(Icons.add),
+                                icon: const Icon(Icons.add,color: Colors.brown,),
                                 onPressed: () {
                                   setState(() {
                                     quantity++;
@@ -233,12 +233,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           },
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 16),
-                            backgroundColor: Colors.blue,
+                            backgroundColor: Colors.brown,
                           ),
-                          icon: const Icon(Icons.shopping_cart),
+                          icon: const Icon(Icons.shopping_cart, color: Colors.grey,),
                           label: const Text(
                             'Add to Cart',
-                            style: TextStyle(fontSize: 18),
+                            style: TextStyle(fontSize: 18, color: Colors.grey),
                           ),
                         ),
                       ),
