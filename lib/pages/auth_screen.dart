@@ -91,7 +91,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         ),
                       ),
                       Text(
-                        'Welcome to ecommerce',
+                        'Welcome to Secure Shopper',
                         style: TextStyle(
                           fontSize: 24,
                           color: Colors.brown,
@@ -196,8 +196,8 @@ class _AuthScreenState extends State<AuthScreen> {
                         },
                         child: Text(
                           isLogin
-                              ? 'Already have an account? Login'
-                              : 'Don\'t have an account? Sign Up',
+                              ? 'Don\'t have an account? Sign Up'
+                              : 'Already have an account? Login',
                           style: TextStyle(
                             color: Colors.brown,
                             fontFamily: "nexa",

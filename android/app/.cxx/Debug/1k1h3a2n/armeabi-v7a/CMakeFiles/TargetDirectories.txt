@@ -1,0 +1,2 @@
+C:/Users/Vidhika's ASUS/Desktop/Projects/ecommerce_naya/android/app/.cxx/Debug/1k1h3a2n/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/Vidhika's ASUS/Desktop/Projects/ecommerce_naya/android/app/.cxx/Debug/1k1h3a2n/armeabi-v7a/CMakeFiles/rebuild_cache.dir

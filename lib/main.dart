@@ -1,4 +1,5 @@
 import 'package:e_commerce/pages/LogininPage.dart';
+import 'package:e_commerce/screens/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:e_commerce/pages/auth_screen.dart';
@@ -137,7 +138,7 @@ class _MyAppState extends State<MyApp> {
         ),
         initialRoute: isAuthenticated ? '/home' : '/auth',
         routes: {
-          '/auth': (context) => AuthScreen(),
+          '/auth': (context) => SplashScreen(),
           '/home': (context) => HomeScreen(),
           '/checkout': (context) => const CheckoutScreen(),
           '/order-confirmation': (context) => const OrderConfirmationScreen(),

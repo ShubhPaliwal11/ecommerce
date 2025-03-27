@@ -23,7 +23,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 300,
+            expandedHeight: 250, // Reduced from 300
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Stack(
@@ -44,18 +44,16 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             ),
             actions: [
               IconButton(
-                icon: const Icon(Icons.favorite_border,color: Colors.brown),
+                icon: const Icon(Icons.favorite_border, color: Colors.brown),
                 onPressed: () {
-                  // TODO: Implement wishlist functionality
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Added to wishlist')),
                   );
                 },
               ),
               IconButton(
-                icon: const Icon(Icons.share,color: Colors.brown),
+                icon: const Icon(Icons.share, color: Colors.brown),
                 onPressed: () {
-                  // TODO: Implement share functionality
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Share functionality coming soon'),
@@ -77,14 +75,19 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       Expanded(
                         child: Text(
                           widget.product.name,
-                          style: Theme.of(context).textTheme.headlineSmall
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
                               ?.copyWith(fontWeight: FontWeight.bold),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       Consumer<CartProvider>(
                         builder: (context, cart, child) {
                           return IconButton(
-                            icon: const Icon(Icons.shopping_cart,color: Colors.brown),
+                            icon: const Icon(Icons.shopping_cart,
+                                color: Colors.brown),
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -124,13 +127,18 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          '\$${widget.product.price.toStringAsFixed(2)}',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.headlineMedium?.copyWith(
-                            color: Colors.brown,
-                            fontWeight: FontWeight.bold,
+                        Flexible(
+                          child: Text(
+                            '\$${widget.product.price.toStringAsFixed(2)}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineMedium
+                                ?.copyWith(
+                              color: Colors.brown,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         Container(
@@ -140,22 +148,29 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             border: Border.all(color: Colors.grey[300]!),
                           ),
                           child: Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              IconButton(
-                                icon: const Icon(Icons.remove, color: Colors.brown),
-                                onPressed:
-                                quantity > 1
-                                    ? () {
-                                  setState(() {
-                                    quantity--;
-                                  });
-                                }
-                                    : null,
-                              ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
+                              ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  minWidth: 36,
+                                  maxWidth: 36,
+                                  minHeight: 36,
                                 ),
+                                child: IconButton(
+                                  icon: const Icon(Icons.remove,
+                                      size: 18, color: Colors.brown),
+                                  onPressed: quantity > 1
+                                      ? () {
+                                    setState(() {
+                                      quantity--;
+                                    });
+                                  }
+                                      : null,
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                const EdgeInsets.symmetric(horizontal: 8),
                                 child: Text(
                                   quantity.toString(),
                                   style: const TextStyle(
@@ -164,13 +179,21 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   ),
                                 ),
                               ),
-                              IconButton(
-                                icon: const Icon(Icons.add,color: Colors.brown,),
-                                onPressed: () {
-                                  setState(() {
-                                    quantity++;
-                                  });
-                                },
+                              ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  minWidth: 36,
+                                  maxWidth: 36,
+                                  minHeight: 36,
+                                ),
+                                child: IconButton(
+                                  icon: const Icon(Icons.add,
+                                      size: 18, color: Colors.brown),
+                                  onPressed: () {
+                                    setState(() {
+                                      quantity++;
+                                    });
+                                  },
+                                ),
                               ),
                             ],
                           ),
@@ -178,20 +201,22 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 16), // Reduced from 24
                   const Text(
                     'Description',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     widget.product.description,
                     style: Theme.of(context).textTheme.bodyLarge,
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 16), // Reduced from 24
                   const Text(
                     'Specifications',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   Container(
@@ -211,38 +236,31 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            for (int i = 0; i < quantity; i++) {
-                              context.read<CartProvider>().addItem(
-                                widget.product,
-                              );
-                            }
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Added $quantity item(s) to cart',
-                                ),
-                                duration: const Duration(seconds: 1),
-                              ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            backgroundColor: Colors.brown,
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        for (int i = 0; i < quantity; i++) {
+                          context.read<CartProvider>().addItem(widget.product);
+                        }
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Added $quantity item(s) to cart'),
+                            duration: const Duration(seconds: 1),
                           ),
-                          icon: const Icon(Icons.shopping_cart, color: Colors.grey,),
-                          label: const Text(
-                            'Add to Cart',
-                            style: TextStyle(fontSize: 18, color: Colors.grey),
-                          ),
-                        ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        backgroundColor: Colors.brown,
                       ),
-                    ],
+                      icon: const Icon(Icons.shopping_cart, color: Colors.white),
+                      label: const Text(
+                        'Add to Cart',
+                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -255,17 +273,23 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   Widget _buildSpecificationItem(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: TextStyle(fontSize: 16, color: Colors.grey[600])),
-          Text(
-            value,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-          ),
-        ],
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+          Flexible(
+          child: Text(label,
+          style: TextStyle(fontSize: 14, color: Colors.grey[600])),
+    ),
+      Flexible(
+        child: Text(
+          value,
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          overflow: TextOverflow.ellipsis,
+        ),
       ),
+      ],
+    ),
     );
   }
 
