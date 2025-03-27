@@ -1,13 +1,14 @@
 import 'package:e_commerce/pages/LogininPage.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../pages/auth_screen.dart';
 
 Future<void> signOutUser(BuildContext context) async {
   try {
     await Supabase.instance.client.auth.signOut();
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => Logininpage()),
+      MaterialPageRoute(builder: (context) => AuthScreen()),
       (route) => false, // Remove all previous routes
     );
     ScaffoldMessenger.of(context).showSnackBar(
