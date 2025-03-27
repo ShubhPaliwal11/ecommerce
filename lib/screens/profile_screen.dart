@@ -55,12 +55,12 @@ class ProfileScreen extends StatelessWidget {
                   const CircleAvatar(
                     radius: 50,
                     backgroundImage: NetworkImage(
-                      'https://via.placeholder.com/150',
+                      'https://imgs.search.brave.com/lwNPb1k8bMfm9sjIydfMxGzlGbwtjRaKYrwGa1YxnUc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4x/Lmljb25maW5kZXIu/Y29tL2RhdGEvaWNv/bnMvbmluamEtdGhp/bmdzLTEvNzIwL25p/bmphLWJhY2tncm91/bmQtMTI4LnBuZw',
                     ),
                   ),
                   const SizedBox(height: 16),
                   const Text(
-                    'John Doe',
+                    'Sanskar Agrawal',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -68,7 +68,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                   const Text(
-                    'john.doe@example.com',
+                    'sanskar21072005@gmail.com',
                     style: TextStyle(fontSize: 16, color: Colors.white70),
                   ),
                 ],
