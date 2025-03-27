@@ -1,5 +1,23 @@
+import 'package:e_commerce/pages/LogininPage.dart';
 import 'package:flutter/material.dart';
-
+import 'package:supabase_flutter/supabase_flutter.dart';
+Future<void> signOutUser(BuildContext context) async {
+  try {
+    await Supabase.instance.client.auth.signOut();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => Logininpage()),
+      (route) => false, // Remove all previous routes
+    );
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Successfully logged out')),
+    );
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error: ${e.toString()}')),
+    );
+  }
+}
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
@@ -20,7 +38,6 @@ class ProfileScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Profile header
             Container(
               padding: const EdgeInsets.all(16),
               color: Theme.of(context).primaryColor,
@@ -33,7 +50,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  const Text(
+                   Text(
                     'John Doe',
                     style: TextStyle(
                       fontSize: 24,
@@ -100,14 +117,7 @@ class ProfileScreen extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('Logout'),
-              onTap: () {
-                // Handle logout
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Logout functionality coming soon!'),
-                  ),
-                );
-              },
+              onTap: () => signOutUser(context),
             ),
           ],
         ),
