@@ -69,32 +69,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     // Provide more detailed error messages based on Razorpay error codes
     if (response.code != null) {
       switch (response.code) {
-        case 1:
+        case 2:
           errorDetails = 'Payment cancelled by user';
           break;
-        case 2:
-          errorDetails =
-              'Payment processing failed. Please check your card details and try again.';
-          break;
         case 3:
-          errorDetails =
-              'Network error. Please check your internet connection.';
-          break;
-        case 4:
-          errorDetails =
-              'Invalid request. Please try again with correct details.';
-          break;
-        case 5:
-          errorDetails = 'International payments are not supported.';
+          errorDetails = 'Payment processing failure';
           break;
         default:
-          errorDetails = response.message ?? 'Unknown error occurred';
+          errorDetails = response.message ?? 'Unknown error';
           break;
       }
     }
-
-    print(
-        'Razorpay Error: Code ${response.code}, Message: ${response.message}, Details: $errorDetails');
 
     setState(() {
       _errorMessage = 'Payment failed: $errorDetails';
@@ -176,24 +161,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         }
       } else {
         // On mobile, proceed with Razorpay SDK
+        final cartAmount =
+            (context.read<CartProvider>().totalAmount * 100).round();
+
         try {
-          // Calculate amount in paise (smallest currency unit)
-          // Make sure it's a whole number
-          final cartAmount =
-              (context.read<CartProvider>().totalAmount * 100).round();
-
-          if (cartAmount <= 0) {
-            setState(() {
-              _errorMessage =
-                  'Invalid amount: The order amount must be greater than 0';
-              _isLoading = false;
-            });
-            return;
-          }
-
-          print(
-              'Cart amount: ${context.read<CartProvider>().totalAmount}, Amount in paise: $cartAmount');
-
           // Rest of the mobile implementation stays the same
           await _ensureRazorpayInstance();
 
@@ -202,9 +173,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           var options = {
             'key': 'rzp_test_47mpRvV2Yh9XLZ',
             'amount': cartAmount, // amount in paise
-            'currency': 'INR', // currency is required
+            'currency': 'INR', // Currency is required
             'name': 'Your Store',
             'description': 'Order #$_orderId',
+            'timeout': 120, // timeout in seconds
             'prefill': {
               'contact': '9999999999',
               'email': _emailController.text.isNotEmpty
@@ -214,22 +186,34 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ? _nameController.text
                   : 'Customer',
             },
-            'external': {
-              'wallets': ['paytm']
-            },
             'notes': {
               'order_id': _orderId,
+              'shipping_address': _addressController.text,
             },
             'theme': {
               'color': '#3399cc',
-            },
+            }
           };
 
           print('Razorpay options: $options');
 
-          // Open Razorpay checkout
-          _razorpay?.open(options);
-          print('Razorpay.open() called');
+          // Verify Razorpay instance exists
+          if (_razorpay == null) {
+            print('Razorpay instance is null, creating a new one');
+            await _ensureRazorpayInstance();
+          }
+
+          // Open Razorpay checkout with try-catch to handle exceptions
+          try {
+            _razorpay?.open(options);
+            print('Razorpay.open() called successfully');
+          } catch (e) {
+            print('Error opening Razorpay: $e');
+            setState(() {
+              _errorMessage = 'Could not open payment gateway: ${e.toString()}';
+              _isLoading = false;
+            });
+          }
         } catch (e) {
           print('Error during Razorpay process: $e');
           setState(() {

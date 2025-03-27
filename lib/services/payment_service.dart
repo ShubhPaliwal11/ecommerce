@@ -223,34 +223,21 @@ class PaymentService {
     if (kIsWeb) return; // Skip on web platform
 
     try {
-      print('Razorpay payment successful!');
-      print('Payment ID: ${response.paymentId}');
-      print('Order ID: ${response.orderId}');
-      print('Signature: ${response.signature}');
-
-      // If server connection fails, we'll still treat payment as successful
-      try {
-        if (response.orderId == null ||
-            response.paymentId == null ||
-            response.signature == null) {
-          print(
-              'Warning: Missing fields in payment success response, but continuing');
-          // Continue with payment flow even with missing fields
-        }
-
-        final confirmResponse = await confirmOrder(
-          orderId: orderId,
-          paymentIntentId: response.orderId ?? 'unknown_order',
-          razorpayPaymentId: response.paymentId ?? 'unknown_payment',
-          razorpaySignature: response.signature ?? 'unknown_signature',
-        );
-
-        print('Payment confirmed with server: $confirmResponse');
-      } catch (e) {
-        print(
-            'Could not confirm payment with server, but payment was successful: $e');
-        // We'll still treat this as a successful payment since Razorpay confirmed it
+      if (response.orderId == null ||
+          response.paymentId == null ||
+          response.signature == null) {
+        print('Error: Missing required fields in payment success response');
+        return;
       }
+
+      final confirmResponse = await confirmOrder(
+        orderId: orderId,
+        paymentIntentId: response.orderId ?? '',
+        razorpayPaymentId: response.paymentId ?? '',
+        razorpaySignature: response.signature ?? '',
+      );
+
+      print('Payment confirmed: $confirmResponse');
     } catch (e) {
       print('Error handling payment success: $e');
     }
