@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
 import '../models/coupon.dart';
-import 'package:flutter_stripe/flutter_stripe.dart' as stripe;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+import '../services/payment_service.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -24,6 +25,48 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final _zipController = TextEditingController();
   bool _isLoading = false;
   String? _errorMessage;
+  bool _csrfVerified = false;
+  String _orderId = '';
+  Razorpay? _razorpay;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializePayment();
+  }
+
+  Future<void> _initializePayment() async {
+    // Initialize payment service to fetch CSRF token
+    await PaymentService.initialize();
+
+    // Setup Razorpay (only for mobile)
+    if (!kIsWeb) {
+      _razorpay = Razorpay();
+      _razorpay?.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+      _razorpay?.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+      _razorpay?.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+    }
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    PaymentService.handlePaymentSuccess(response, _orderId);
+    Navigator.of(context)
+        .pushReplacementNamed('/order-confirmation', arguments: {
+      'csrfVerified': true,
+    });
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    PaymentService.handlePaymentError(response, _orderId);
+    setState(() {
+      _errorMessage = 'Payment failed: ${response.message}';
+      _isLoading = false;
+    });
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    PaymentService.handleExternalWallet(response, _orderId);
+  }
 
   @override
   void dispose() {
@@ -32,6 +75,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     _addressController.dispose();
     _cityController.dispose();
     _zipController.dispose();
+    if (!kIsWeb) {
+      _razorpay?.clear();
+    }
     super.dispose();
   }
 
@@ -45,46 +91,54 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
     try {
       // Generate a unique order ID
-      final orderId = const Uuid().v4();
+      _orderId = const Uuid().v4();
 
+      // For web demo simulation
       if (kIsWeb) {
-        // For web demo, simulate a successful payment
+        // Simulate CSRF verification
+        await Future.delayed(const Duration(seconds: 1));
+        setState(() {
+          _csrfVerified = true;
+        });
+
+        // Simulate payment processing
         await Future.delayed(const Duration(seconds: 2));
+
         if (mounted) {
-          Navigator.of(context).pushReplacementNamed('/order-confirmation');
+          Navigator.of(context)
+              .pushReplacementNamed('/order-confirmation', arguments: {
+            'csrfVerified': true,
+          });
         }
       } else {
-        // For mobile platforms, use Stripe
-        final response = await http.post(
-          Uri.parse('YOUR_BACKEND_URL/create-payment-intent'),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: json.encode({
-            'amount': (context.read<CartProvider>().totalAmount * 100).round(),
-            'currency': 'usd',
-            'orderId': orderId,
-          }),
+        // Create payment intent with CSRF verification
+        final cartAmount =
+            (context.read<CartProvider>().totalAmount * 100).round();
+
+        final paymentIntent = await PaymentService.createPaymentIntent(
+          amount: cartAmount,
+          currency: 'INR',
+          orderId: _orderId,
         );
 
-        if (response.statusCode != 200) {
-          throw Exception('Failed to create payment intent');
-        }
+        // CSRF token was verified successfully
+        setState(() {
+          _csrfVerified = true;
+        });
 
-        final paymentIntent = json.decode(response.body);
-
-        await stripe.Stripe.instance.initPaymentSheet(
-          paymentSheetParameters: stripe.SetupPaymentSheetParameters(
-            paymentIntentClientSecret: paymentIntent['clientSecret'],
-            merchantDisplayName: 'Your Store Name',
-          ),
+        // Configure Razorpay options
+        final options = PaymentService.getRazorpayOptions(
+          orderId: _orderId,
+          razorpayOrderId: paymentIntent['id'],
+          amount: cartAmount,
+          currency: 'INR',
+          name: _nameController.text,
+          email: _emailController.text,
+          description: 'Purchase from Your Store',
         );
 
-        await stripe.Stripe.instance.presentPaymentSheet();
-
-        if (mounted) {
-          Navigator.of(context).pushReplacementNamed('/order-confirmation');
-        }
+        // Open Razorpay checkout
+        _razorpay?.open(options);
       }
     } catch (e) {
       setState(() {
@@ -110,7 +164,26 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               _buildOrderSummary(cart),
               const SizedBox(height: 24),
               _buildShippingForm(),
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
+              if (_csrfVerified)
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.green.shade100,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.check_circle, color: Colors.green.shade700),
+                      const SizedBox(width: 8),
+                      Text(
+                        'CSRF verified successfully',
+                        style: TextStyle(color: Colors.green.shade700),
+                      ),
+                    ],
+                  ),
+                ),
+              const SizedBox(height: 16),
               if (_errorMessage != null)
                 Text(_errorMessage!, style: const TextStyle(color: Colors.red)),
               const SizedBox(height: 16),
@@ -121,7 +194,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ),
                 child: _isLoading
                     ? const CircularProgressIndicator()
-                    : Text(kIsWeb ? 'Place Order' : 'Pay Now'),
+                    : const Text('Place Order'),
               ),
             ],
           ),
