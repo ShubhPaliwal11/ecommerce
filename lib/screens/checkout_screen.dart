@@ -173,8 +173,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           var options = {
             'key': 'rzp_test_47mpRvV2Yh9XLZ',
             'amount': cartAmount, // amount in paise
+            'currency': 'INR', // Currency is required
             'name': 'Your Store',
             'description': 'Order #$_orderId',
+            'timeout': 120, // timeout in seconds
             'prefill': {
               'contact': '9999999999',
               'email': _emailController.text.isNotEmpty
@@ -183,14 +185,35 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               'name': _nameController.text.isNotEmpty
                   ? _nameController.text
                   : 'Customer',
+            },
+            'notes': {
+              'order_id': _orderId,
+              'shipping_address': _addressController.text,
+            },
+            'theme': {
+              'color': '#3399cc',
             }
           };
 
           print('Razorpay options: $options');
 
-          // Open Razorpay checkout
-          _razorpay?.open(options);
-          print('Razorpay.open() called');
+          // Verify Razorpay instance exists
+          if (_razorpay == null) {
+            print('Razorpay instance is null, creating a new one');
+            await _ensureRazorpayInstance();
+          }
+
+          // Open Razorpay checkout with try-catch to handle exceptions
+          try {
+            _razorpay?.open(options);
+            print('Razorpay.open() called successfully');
+          } catch (e) {
+            print('Error opening Razorpay: $e');
+            setState(() {
+              _errorMessage = 'Could not open payment gateway: ${e.toString()}';
+              _isLoading = false;
+            });
+          }
         } catch (e) {
           print('Error during Razorpay process: $e');
           setState(() {
